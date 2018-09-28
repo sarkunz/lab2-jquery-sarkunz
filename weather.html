@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="main.css">
+<link href="https://fonts.googleapis.com/css?family=Quicksand:400,700|Raleway:400,700" rel="stylesheet">        <title>City Finder</title>
+        <script
+          src="https://code.jquery.com/jquery-3.2.1.min.js">
+        </script>
+        <script>
+            $(document).ready(function() {
+              
+                $( "#cityField" ).keyup(function() {
+                  var bioUrl = "https://bioresearch.byu.edu/cs260/jquery/getcity.cgi?q=";
+                  var value = $('#cityField').val();
+                  var everything;
+                  bioUrl += value;
+                  $.getJSON(bioUrl, function(data) {
+                    everything = "<ul class='sugList'>";
+                    $.each(data, function(i,item) {
+                      everything += "<li> "+data[i].city + "</li>";
+                    });
+                    everything += "</ul>";
+                    everything= "<div>SOME TEXT HERE</div>"
+                    $("#txtHint").html(everything);
+                  })
+                  .done(function() { console.log('getJSON request succeeded!'); })
+                  .fail(function(jqXHR, textStatus, errorThrown) { 
+                    console.log('getJSON request failed! ' + textStatus); 
+                    console.log("incoming "+jqXHR.responseText);
+                  })
+                  .always(function() {
+                    console.log('getJSON request ended!');
+                    if(!everything){
+                      everything = "none";
+                      $("#txtHint").html(everything);
+                    } 
+                    $('#suggestions').css('display', 'block');
+                  });
+                });
+                
+                $("#weatherButton").click(function(e){
+                  var value = $("#cityField").val();
+                  console.log(value);
+                  e.preventDefault();
+                  $("#displayCity").text(value);
+                  
+                  getWeather();
+                  $('#weatherSect').css('display', 'block');
+                });
+                
+                function getWeather(){
+                  var url = "https://api.openweathermap.org/data/2.5/weather?units=imperial&appid=d040ef8e44802904d1011fb8259f38bc&q=";
+                  var city = $("#cityField").val();
+                  url += city;
+                  $.ajax({
+                    url: url,
+                    dataType: "json",
+                    success: function(parsed_json){
+                      var location = parsed_json['name'];
+                      var weather = parsed_json['weather'][0]['main'];
+                      var temp = parsed_json['main']['temp'];
+                      var weather_icon = parsed_json['weather'][0]['icon'];
+                      var humidity = parsed_json['main']['humidity'];
+                      var temp_min = parsed_json['main']['temp_min'];
+                      var temp_max = parsed_json['main']['temp_max'];
+                      var wind_speed = parsed_json['wind']['speed'];
+                      everything = "<img src=\"http://openweathermap.org/img/w/" + weather_icon + ".png\"/>"
+                      everything += "<ul>";
+                      everything += "<li>Location: " + location;
+                      everything += "<li>Weather: " + weather + " (" + temp + "&#8457;)";
+                      everything += "<li>Low: " + temp_min + "&#8457; | High: " + temp_max + "&#8457;";
+                      everything += "<li>Humidity: " + humidity + "%";
+                      everything += "<li>Wind: " + wind_speed + " mph";
+                      everything += "</ul>";
+                      $("#weather").html(everything);
+                    }
+                  });
+                }
+                
+                
+                $('#searchButton').click(function(e){
+                  var value = $('#searchField').val();
+                  e.preventDefault();
+                  var url = "https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle="
+                  url += value;
+                  url += '&site=stackoverflow';
+                  $.ajax({
+                    url: url,
+                    dataType: "json",
+                    success: function(data){
+                      console.log(data);
+                      var everything = "<ul>";
+                      var myarray = data["items"];
+                      $.each(myarray, function(i, item){
+                        everything +='<li><a href=&quot;'+ myarray[i].link + '&quot:>';
+                        everything += myarray[i].title;
+                        everything += "</a></li>";
+                      })
+                      everything += "</ul>";
+                      $('#answers').append(everything);
+                    }
+                  });
+                });
+                
+                
+                
+            });
+        </script>
+    </head>
+    <body>
+      <div id="citySect" class="searchSect">
+        <form>
+            Enter A Utah city: <input type="text" class="textInput" id="cityField" value="">
+            <input id="weatherButton" type="submit" value="Submit">
+            <div id="suggestions" style="display:none">
+              Suggestions: <span id="txtHint">Empty</span>
+            </div>
+        </form>
+      </div>
+        
+      <div id="weatherSect" class="searchSect" style="display:none">
+        <p>Current Weather in</p>
+        <div id="displayCity">No City</div>
+        <div id="weather">No weather</div>
+      </div>
+        
+      <div id="stackExchangeSect" class="searchSect">
+        <form id="stackExchangeSect">
+          Enter a search term: <input type="text" class="textInput" id="searchField" value="">
+          <input id="searchButton" type="submit" value="Submit">
+        </form>
+        <div id="answers"></div>
+      </div>
+    
+    </body>
+</html>

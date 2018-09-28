@@ -1,0 +1,65 @@
+html {
+    /*background-image: url("regClouds.jpg");*/
+    background-image: url("clouds.png");
+    background-color: #788a99;
+    background-size:cover;
+    background-repeat: no-repeat;
+    height: 100%;
+    background-position: center center;
+    
+    font-family: 'Raleway', sans-serif;
+}
+
+body{
+    width:80%;
+    margin-left:auto;
+    margin-right:auto;
+    vertical-align:middle;
+}
+
+
+input[type="text"]
+{
+    background: transparent;
+    border: 1px solid grey;
+    border-radius: 3px;
+}
+
+button{
+    background-color: transparent;
+}
+
+#displayCity{
+    font-size:50px;
+    font-weight: 700;
+    color: #709dc5;
+}
+
+.searchSect{
+    padding:3em;
+    margin: 2em;
+    border-radius:5px;
+    text-align: left;
+    
+    background-color: rgba(253,240,203, .6);
+    
+}
+
+#suggestions{
+    font-size:smaller;
+    padding-top:1em;
+}
+
+.sugList{
+    padding-top:0;
+    padding-left:2em;
+    margin-top:.5em;
+}
+
+li{
+    list-style: none;
+}
+
+ul{
+    padding-left:0;
+}
